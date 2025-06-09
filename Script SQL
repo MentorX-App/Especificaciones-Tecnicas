@@ -1,0 +1,94 @@
+CREATE DATABASE mentorx;
+
+USE mentorx;
+
+CREATE TABLE tipo_usuario (
+    id_tipo_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    descripcion VARCHAR(100),
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME
+);
+
+CREATE TABLE usuarios (
+    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    correo VARCHAR(100) UNIQUE NULL,
+    celular VARCHAR(9) UNIQUE NULL,
+    contrasena VARCHAR(255),
+    nombre VARCHAR(100) NOT NULL,
+    tipo_usuario INT,
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME,
+    FOREIGN KEY (tipo_usuario) REFERENCES tipo_usuario(id_tipo_usuario)
+);
+
+CREATE TABLE relacion_tutor_usuario (
+    id_relacion INT PRIMARY KEY AUTO_INCREMENT,
+    id_tutor INT,
+    id_usuario INT,
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME,
+    FOREIGN KEY (id_tutor) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
+
+CREATE TABLE tipo_actividad (
+    id_tipo_actividad INT PRIMARY KEY AUTO_INCREMENT,
+    descripcion VARCHAR(100),
+    detalle VARCHAR(100),
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME
+);
+
+CREATE TABLE actividad (
+    id_actividad INT PRIMARY KEY AUTO_INCREMENT,
+    id_tipo_actividad INT,
+    id_tutor INT,
+    titulo VARCHAR(100),
+    detalle VARCHAR(100),
+    puntaje INT,
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME,
+    FOREIGN KEY (id_tipo_actividad) REFERENCES tipo_actividad(id_tipo_actividad),
+    FOREIGN KEY (id_tutor) REFERENCES usuarios(id_usuario)
+);
+
+CREATE TABLE asignacion_cabecera (
+    id_asignacion INT PRIMARY KEY AUTO_INCREMENT,
+    id_tutor INT,
+    id_usuario INT,
+    id_actividad INT,
+    fecha_creacion DATETIME,
+    fecha_modificacion DATETIME,
+    FOREIGN KEY (id_tutor) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_actividad) REFERENCES actividad(id_actividad)
+);
+
+CREATE TABLE asignacion_detalle (
+    id_asignacion_detalle INT PRIMARY KEY AUTO_INCREMENT,
+    id_asignacion_cabecera INT,
+    realizado BOOLEAN,
+    puntaje INT,
+    fecha_realizacion DATETIME,
+    fecha_modificacion DATETIME,
+    FOREIGN KEY (id_asignacion_cabecera) REFERENCES asignacion_cabecera(id_asignacion)
+);
+
+CREATE TABLE resumen_diario (
+    id_resumen INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    fecha DATE,
+    puntos_ganados INT,
+    puntos_canjeados INT,
+    puntos_perdidos INT,
+    fecha_modificacion DATETIME,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
+
+INSERT INTO tipo_usuario (id_tipo_usuario, descripcion, fecha_creacion, fecha_modificacion) 
+VALUES (1, 'Tutor', NOW(), NOW());
+
+INSERT INTO tipo_usuario (id_tipo_usuario, descripcion, fecha_creacion, fecha_modificacion) 
+VALUES (2, 'Usuario', NOW(), NOW());
+
+SELECT * FROM usuarios;
